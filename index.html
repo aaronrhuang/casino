@@ -89,39 +89,40 @@
     position: relative;
     width: 90vw;
     max-width: 900px;
-    aspect-ratio: 16 / 10;
-    margin: 0 auto;
+    margin: 20px auto 0;
   }
   .table {
-    position: absolute;
-    inset: 0;
+    position: relative;
+    width: 100%;
     background: radial-gradient(ellipse at 50% 45%, #2a5244, #1e3a2f 60%, #162e24 100%);
-    border-radius: 50% / 40%;
+    border-radius: 24px;
     border: 3px solid var(--table-rim);
     box-shadow:
       0 0 0 6px rgba(30, 58, 47, 0.5),
       0 0 0 10px rgba(15, 17, 24, 0.8),
       inset 0 0 80px rgba(0,0,0,0.3),
       0 20px 60px rgba(0,0,0,0.6);
-    overflow: hidden;
+    padding: 20px 20px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   .table::before {
     content: '';
     position: absolute;
     inset: 8px;
-    border-radius: 50% / 40%;
+    border-radius: 20px;
     border: 1px solid rgba(196, 165, 90, 0.12);
     pointer-events: none;
   }
 
   .zones {
-    position: absolute;
-    inset: 0;
+    position: relative;
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 12% 8% 8%;
+    gap: 16px;
   }
 
   .card-area {
@@ -130,6 +131,17 @@
     gap: 12%;
     width: 100%;
     margin-bottom: 4%;
+    position: relative;
+    overflow: visible;
+  }
+  .card-area::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: -12px;
+    left: 50%;
+    border-left: 1px dashed rgba(255,255,255,0.1);
+    pointer-events: none;
   }
 
   .hand {
@@ -300,7 +312,7 @@
     cursor: pointer;
     transition: all 0.25s;
     position: relative;
-    min-height: 110px;
+    min-height: 126px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -340,7 +352,7 @@
     gap: 2px;
     justify-content: center;
     align-items: center;
-    min-height: 30px;
+    min-height: 36px;
     padding: 4px;
   }
   .chip {
@@ -382,7 +394,7 @@
     display: flex;
     justify-content: center;
     gap: 14px;
-    padding: 14px 0 6px;
+    padding: 24px 0 6px;
     flex-wrap: wrap;
   }
   .chip-tray .chip-btn {
@@ -616,12 +628,12 @@
     width: 90vw;
     max-width: 900px;
     min-height: 340px;
-    margin: 0 auto;
+    margin: 20px auto 0;
   }
   .bj-table {
     position: relative;
     width: 100%;
-    min-height: 340px;
+    min-height: 360px;
     background: radial-gradient(ellipse at 50% 45%, #2a5244, #1e3a2f 60%, #162e24 100%);
     border-radius: 24px;
     border: 3px solid var(--table-rim);
@@ -630,7 +642,7 @@
       0 0 0 10px rgba(15, 17, 24, 0.8),
       inset 0 0 80px rgba(0,0,0,0.3),
       0 20px 60px rgba(0,0,0,0.6);
-    padding: 20px;
+    padding: 20px 20px 16px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -668,6 +680,7 @@
     border: 1.5px solid rgba(255,255,255,0.08);
     background: rgba(74, 106, 138, 0.1);
     min-width: 140px;
+    min-height: 180px;
     transition: all 0.3s;
   }
   .bj-hand-box.active-hand {
@@ -718,6 +731,18 @@
     background: rgba(196, 165, 90, 0.12) !important;
     opacity: 1 !important;
   }
+
+  .strat-feedback {
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    min-height: 1.2rem;
+    padding: 10px 0 4px;
+    transition: opacity 0.3s;
+  }
+  .strat-feedback.correct { color: #4a9a5a; }
+  .strat-feedback.incorrect { color: var(--card-red); }
 
   /* ── Strategy Chart ── */
   .strategy-toggle {
@@ -797,10 +822,19 @@
   .strat-table td.Ds { color: #c4a55a; }
   .strat-table td.Rh { color: #c06060; }
 
+  .strat-table th.strat-col-hl { color: var(--gold); }
+  .strat-table td.strat-row-hl { background: rgba(255,255,255,0.04); }
+  .strat-table td.strat-col-hl { background: rgba(255,255,255,0.04); }
+  .strat-table td.strat-cell-hl {
+    background: rgba(196, 165, 90, 0.25);
+    outline: 1.5px solid var(--gold);
+    outline-offset: -1px;
+    border-radius: 3px;
+  }
+
   @media (max-width: 600px) {
-    .table-container { width: 96vw; aspect-ratio: 16 / 13; }
-    .zones { padding: 10% 10% 6%; }
-    .bet-zones { margin-top: 0; }
+    .table-container { width: 96vw; }
+    .table { min-height: 340px; padding: 16px; }
     .card-slot { width: 44px; height: 62px; }
     .cards-row { min-height: 62px; }
     .card-corner .c-rank { font-size: 0.6rem; }
@@ -827,17 +861,6 @@
   <div class="game-tabs">
     <button class="game-tab active" onclick="switchGame('baccarat')">Baccarat</button>
     <button class="game-tab" onclick="switchGame('blackjack')">Blackjack</button>
-  </div>
-</div>
-
-<div class="balance-bar">
-  <div>
-    <span class="label">Balance </span>
-    <span class="amount" id="balance">$10,000</span>
-  </div>
-  <div>
-    <span class="label">Bet </span>
-    <span class="amount" id="totalBet">$0</span>
   </div>
 </div>
 
@@ -902,6 +925,17 @@
   <div class="chip-btn c-all" data-value="all">ALL</div>
 </div>
 
+<div class="balance-bar">
+  <div>
+    <span class="label">Balance </span>
+    <span class="amount" id="balance">$10,000</span>
+  </div>
+  <div>
+    <span class="label">Bet </span>
+    <span class="amount" id="totalBet">$0</span>
+  </div>
+</div>
+
 <div class="message" id="message"></div>
 
 <div class="controls">
@@ -937,11 +971,23 @@
   <div class="chip-btn c-all" data-value="all">ALL</div>
 </div>
 
+<div class="balance-bar">
+  <div>
+    <span class="label">Balance </span>
+    <span class="amount" id="bjBalance">$10,000</span>
+  </div>
+  <div>
+    <span class="label">Bet </span>
+    <span class="amount" id="bjTotalBet">$0</span>
+  </div>
+</div>
+
 <div class="message" id="bjMessage"></div>
 
 <div class="bj-actions" id="bjActions">
   <button class="btn primary" id="bjBtnDeal" onclick="bjDeal()" disabled>Deal</button>
   <button class="btn" id="bjBtnDouble" onclick="bjDouble()" style="display:none;">Double</button>
+  <button class="btn" id="bjBtnSplit" onclick="bjSplit()" style="display:none;">Split</button>
   <button class="btn" id="bjBtnHit" onclick="bjHit()" style="display:none;">Hit</button>
   <button class="btn" id="bjBtnStand" onclick="bjStand()" style="display:none;">Stand</button>
   <button class="btn primary" id="bjBtnNewRound" onclick="bjNewRound()" style="display:none;">New Round</button>
@@ -950,6 +996,7 @@
 <button class="strategy-toggle" id="stratToggle" onclick="toggleStrategy()">
   Basic Strategy <span class="arrow">&#9660;</span>
 </button>
+<div class="strat-feedback" id="stratFeedback"></div>
 <div class="strategy-panel" id="stratPanel">
   <div class="strategy-panel-inner" id="stratContent"></div>
 </div>
@@ -1029,7 +1076,17 @@ function updateBalance() {
   $('balance').textContent = `$${balance.toLocaleString()}`;
   const total = bets.player + bets.banker + bets.tie;
   $('totalBet').textContent = `$${total.toLocaleString()}`;
-  $('btnDeal').disabled = total < MIN_BET;
+  if ($('bjBalance')) $('bjBalance').textContent = `$${balance.toLocaleString()}`;
+  if ($('bjTotalBet')) {
+    let bjTotal;
+    if (typeof bjHands !== 'undefined' && bjHands.length > 0 && typeof bjPhase !== 'undefined' && bjPhase !== 'betting') {
+      bjTotal = bjHands.reduce((a, h) => a + h.bet, 0);
+    } else {
+      bjTotal = typeof bjBets !== 'undefined' ? bjBets.reduce((a, b) => a + b, 0) : 0;
+    }
+    $('bjTotalBet').textContent = `$${bjTotal.toLocaleString()}`;
+  }
+  $('btnDeal').disabled = false;
   updateChipTray();
 }
 
@@ -1664,7 +1721,7 @@ document.addEventListener('contextmenu', e => {
 // Click table or anywhere to continue after round ends
 document.querySelector('.table').addEventListener('click', function(e) {
   if (phase === 'done' && !e.target.closest('.result-banner')) { newRound(); return; }
-  if (phase === 'betting' && (bets.player + bets.banker + bets.tie) >= MIN_BET && !e.target.closest('.bet-zone')) deal();
+  if (phase === 'betting' && !e.target.closest('.bet-zone')) deal();
 });
 
 // ══════════════════════════════════════
@@ -1673,8 +1730,6 @@ document.querySelector('.table').addEventListener('click', function(e) {
 
 function deal() {
   if (phase !== 'betting') return;
-  const total = bets.player + bets.banker + bets.tie;
-  if (total < MIN_BET) return;
 
   phase = 'dealing';
   revealPhase = 'initial';
@@ -1923,19 +1978,10 @@ function newRound() {
   updateBalance();
   setMessage('', '');
 
-  if (balance < 100) {
-    phase = 'gameover';
+  if (balance <= 0) {
     $('chipTray').style.opacity = '0.3';
     $('chipTray').style.pointerEvents = 'none';
     document.querySelectorAll('.bet-zone').forEach(z => z.classList.add('disabled'));
-    $('btnDeal').disabled = true;
-    $('btnNew').style.display = 'none';
-    setMessage('', '');
-    $('resultText').textContent = 'Game Over';
-    $('resultSub').textContent = 'Time to go to bed';
-    $('resultBanner').querySelector('.result-continue').textContent = 'Click to play again';
-    $('resultBanner').classList.add('show');
-    $('resultBanner').onclick = function() { restartGame(); };
   }
 }
 
@@ -1981,7 +2027,7 @@ let bjDealerCards = [];
 let bjPhase = 'betting'; // betting, playing, dealerTurn, done
 let bjCurrentHand = 0;
 let bjBets = [0, 0, 0]; // per-hand bets during betting
-let bjLastWinBets = null; // [bet0, bet1, bet2] from last winning round
+let bjLastHandResults = null; // [{slot, bet, result}] from last round
 let bjSelectedChip = 500;
 
 function bjDrawCard() {
@@ -2052,11 +2098,15 @@ function bjRenderBettingHands() {
     box.dataset.hand = i;
     box.innerHTML = `
       <div class="bj-hand-label">Hand ${i + 1}</div>
-      <div class="bj-hand-cards" style="min-height:82px;"></div>
+      <div class="bj-hand-cards"></div>
       <div class="chip-stack" id="bjChips${i}"></div>
       <div class="bj-hand-bet" id="bjHandBet${i}">${bjBets[i] > 0 ? '$' + bjBets[i].toLocaleString() : 'Place bet'}</div>
+      <div class="bj-hand-result"></div>
     `;
-    box.addEventListener('click', () => bjPlaceBetOnHand(i));
+    box.addEventListener('click', (e) => {
+      if (e.target.closest('.chip-stack .chip')) return; // handled by chip drag
+      bjPlaceBetOnHand(i);
+    });
     row.appendChild(box);
     bjRenderChipStack($('bjChips' + i), bjBets[i]);
   }
@@ -2076,6 +2126,23 @@ function bjPlaceBetOnHand(idx) {
   const box = betEl.closest('.bj-hand-box');
   if (box) box.classList.remove('no-bet');
   bjUpdateDealBtn();
+}
+
+function bjRemoveBet(idx, value) {
+  if (bjPhase !== 'betting') return;
+  const actual = Math.min(value, bjBets[idx]);
+  if (actual <= 0) return;
+  bjBets[idx] -= actual;
+  balance += actual;
+  const betEl = document.getElementById('bjHandBet' + idx);
+  if (betEl) betEl.textContent = bjBets[idx] > 0 ? '$' + bjBets[idx].toLocaleString() : 'Place bet';
+  const chipsEl = document.getElementById('bjChips' + idx);
+  if (chipsEl) bjRenderChipStack(chipsEl, bjBets[idx]);
+  const box = document.querySelector(`.bj-hand-box[data-hand="${idx}"]`);
+  if (box && bjBets[idx] === 0) box.classList.add('no-bet');
+  updateBalance();
+  bjUpdateDealBtn();
+  bjUpdateChipTray();
 }
 
 function bjUpdateDealBtn() {
@@ -2132,6 +2199,27 @@ function bjClearDropTargets() {
   document.querySelectorAll('.bj-hand-box.drop-target').forEach(b => b.classList.remove('drop-target'));
 }
 
+// Allow dragging chips OFF BJ hand boxes
+$('bjHandsRow').addEventListener('pointerdown', function(e) {
+  if (bjPhase !== 'betting') return;
+  const chip = e.target.closest('.chip-stack .chip');
+  if (!chip) return;
+  const box = chip.closest('.bj-hand-box');
+  if (!box) return;
+
+  e.preventDefault();
+  e.stopPropagation();
+  const idx = parseInt(box.dataset.hand);
+  const denoms = [100000, 50000, 25000, 10000, 1000, 500, 25];
+  let removeVal = 25;
+  for (const d of denoms) {
+    if (bjBets[idx] >= d) { removeVal = d; break; }
+  }
+
+  bjChipDrag = { value: removeVal, source: 'box', handIdx: idx, startX: e.clientX, startY: e.clientY, pointerId: e.pointerId };
+  bjCreateChipGhost(removeVal, e.clientX, e.clientY, false);
+}, { passive: false });
+
 $('bjChipTray').addEventListener('pointerdown', function(e) {
   if (bjPhase !== 'betting') return;
   const btn = e.target.closest('.chip-btn');
@@ -2172,7 +2260,35 @@ document.addEventListener('pointerup', function(e) {
   const isClick = dx < 6 && dy < 6;
 
   const box = bjGetHandUnderPoint(e.clientX, e.clientY);
-  if (box) {
+  if (bjChipDrag.source === 'box') {
+    const fromIdx = bjChipDrag.handIdx;
+    if (isClick) {
+      // Clicked chip in box: add another bet of selected denomination
+      const value = bjSelectedChip === 'all' ? balance : bjSelectedChip;
+      if (value > 0 && balance >= value) {
+        bjPlaceBetOnHand(fromIdx);
+      }
+    } else if (box && parseInt(box.dataset.hand) !== fromIdx) {
+      // Transfer chip to another hand box
+      const actual = Math.min(bjChipDrag.value, bjBets[fromIdx]);
+      if (actual > 0) {
+        bjBets[fromIdx] -= actual;
+        bjBets[parseInt(box.dataset.hand)] += actual;
+        for (let i = 0; i < 3; i++) {
+          const betEl = document.getElementById('bjHandBet' + i);
+          if (betEl) betEl.textContent = bjBets[i] > 0 ? '$' + bjBets[i].toLocaleString() : 'Place bet';
+          const chipsEl = document.getElementById('bjChips' + i);
+          if (chipsEl) bjRenderChipStack(chipsEl, bjBets[i]);
+          const b = document.querySelector(`.bj-hand-box[data-hand="${i}"]`);
+          if (b) b.classList.toggle('no-bet', bjBets[i] === 0);
+        }
+        updateBalance();
+      }
+    } else if (!box) {
+      // Dragged off table: return to balance
+      bjRemoveBet(fromIdx, bjChipDrag.value);
+    }
+  } else if (box) {
     const idx = parseInt(box.dataset.hand);
     bjPlaceBetOnHand(idx);
   } else if (isClick) {
@@ -2189,6 +2305,69 @@ document.addEventListener('pointercancel', function(e) {
   bjRemoveChipGhost();
   bjChipDrag = null;
 }, { passive: false });
+
+// ── Blackjack Gestures: double-tap = hit, swipe = stand ──
+(function() {
+  const table = document.querySelector('.bj-table');
+  let lastTap = 0;
+  let swipeStart = null;
+
+  table.addEventListener('pointerdown', function(e) {
+    if (bjPhase !== 'playing') return;
+    if (e.target.closest('.chip-stack, .chip-btn, .bj-hand-box.no-bet')) return;
+    swipeStart = { x: e.clientX, y: e.clientY, time: Date.now() };
+  });
+
+  table.addEventListener('pointerup', function(e) {
+    if (e.target.closest('.chip-stack, .chip-btn')) return;
+
+    // Done phase: click anywhere to start new round
+    if (bjPhase === 'done') {
+      swipeStart = null;
+      lastTap = 0;
+      bjNewRound();
+      return;
+    }
+
+    // Betting phase: click table (not hand boxes) to deal
+    if (bjPhase === 'betting') {
+      if (e.target.closest('.bj-hand-box')) return;
+      swipeStart = null;
+      lastTap = 0;
+      bjDeal();
+      return;
+    }
+
+    if (bjPhase !== 'playing') return;
+    if (e.target.closest('.bj-hand-box.no-bet')) return;
+
+    // Swipe detection
+    if (swipeStart) {
+      const dx = e.clientX - swipeStart.x;
+      const dy = e.clientY - swipeStart.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const elapsed = Date.now() - swipeStart.time;
+      if (dist > 60 && elapsed < 500) {
+        swipeStart = null;
+        lastTap = 0;
+        bjStand();
+        return;
+      }
+    }
+    swipeStart = null;
+
+    // Double-tap detection
+    const now = Date.now();
+    if (now - lastTap < 350) {
+      lastTap = 0;
+      bjHit();
+    } else {
+      lastTap = now;
+    }
+  });
+
+  table.addEventListener('pointercancel', function() { swipeStart = null; });
+})();
 
 // ── Blackjack Card Rendering (reuses baccarat card styles) ──
 function bjCreateCard(card, faceDown) {
@@ -2347,6 +2526,160 @@ async function bjDeal() {
 }
 
 
+function bjGetCorrectAction() {
+  if (bjPhase !== 'playing' || bjCurrentHand < 0 || bjCurrentHand >= bjHands.length) return null;
+  const h = bjHands[bjCurrentHand];
+  if (!h || h.done || h.cards.length < 2) return null;
+
+  const dealerCols = ['2','3','4','5','6','7','8','9','10','A'];
+  const dealerUp = bjDealerCards[0];
+  const dealerRank = ['J','Q','K'].includes(dealerUp.rank) ? '10' : dealerUp.rank;
+  const colIdx = dealerCols.indexOf(dealerRank);
+  if (colIdx < 0) return null;
+
+  const cards = h.cards;
+  const total = bjHandTotal(cards);
+  const isPair = cards.length === 2 && bjCardValue(cards[0]) === bjCardValue(cards[1]);
+  const isSoft = bjIsSoft(cards);
+
+  let action = null;
+
+  if (isPair) {
+    const pairLabels = ['A,A','10,10','9,9','8,8','7,7','6,6','5,5','4,4','3,3','2,2'];
+    const pairVal = bjCardValue(cards[0]);
+    const pairKey = pairVal === 11 ? 'A,A' : pairVal + ',' + pairVal;
+    const rowIdx = pairLabels.indexOf(pairKey);
+    if (rowIdx >= 0) action = pairData[rowIdx][colIdx];
+  }
+
+  if (!action && isSoft && total >= 13 && total <= 20) {
+    const softLabels = ['A,2','A,3','A,4','A,5','A,6','A,7','A,8','A,9'];
+    const nonAceTotal = total - 11;
+    const softKey = 'A,' + nonAceTotal;
+    const rowIdx = softLabels.indexOf(softKey);
+    if (rowIdx >= 0) action = softData[rowIdx][colIdx];
+    if (!action && total >= 19) action = 'S';
+  }
+
+  if (!action && total >= 5 && total <= 17) {
+    const hardLabels = ['5','6','7','8','9','10','11','12','13','14','15','16','17'];
+    const rowIdx = hardLabels.indexOf(String(total));
+    if (rowIdx >= 0) action = hardData[rowIdx][colIdx];
+  }
+
+  // Totals 18+ are always Stand, totals 4 or below always Hit
+  if (!action) {
+    if (total >= 18) action = 'S';
+    else if (total <= 4) action = 'H';
+  }
+
+  return action;
+}
+
+function bjCheckAction(playerAction) {
+  const correct = bjGetCorrectAction();
+  if (!correct) return;
+
+  const fb = $('stratFeedback');
+  const actionNames = { H: 'Hit', S: 'Stand', D: 'Double', Ds: 'Double/Stand', P: 'Split', Rh: 'Surrender' };
+
+  // Normalize: D/Ds with >2 cards means H or S
+  let expected = correct;
+  const h = bjHands[bjCurrentHand];
+  if (h && h.cards.length > 2) {
+    if (expected === 'D') expected = 'H';
+    if (expected === 'Ds') expected = 'S';
+  }
+  // If can't double (not enough balance), D->H, Ds->S
+  if (h && h.cards.length === 2 && balance < h.bet) {
+    if (expected === 'D') expected = 'H';
+    if (expected === 'Ds') expected = 'S';
+  }
+
+  const isCorrect = playerAction === expected ||
+    (playerAction === 'H' && expected === 'D' && h.cards.length > 2) ||
+    (playerAction === 'S' && expected === 'Ds' && h.cards.length > 2);
+
+  if (isCorrect) {
+    fb.textContent = 'Correct!';
+    fb.className = 'strat-feedback correct';
+  } else {
+    fb.textContent = `Incorrect — should ${actionNames[correct] || correct}`;
+    fb.className = 'strat-feedback incorrect';
+  }
+}
+
+function bjClearFeedback() {
+  $('stratFeedback').textContent = '';
+  $('stratFeedback').className = 'strat-feedback';
+}
+
+function bjHighlightStrategy() {
+  // Clear all highlights
+  document.querySelectorAll('.strat-row-hl, .strat-col-hl, .strat-cell-hl').forEach(el => {
+    el.classList.remove('strat-row-hl', 'strat-col-hl', 'strat-cell-hl');
+  });
+
+  if (bjPhase !== 'playing' || bjCurrentHand < 0 || bjCurrentHand >= bjHands.length) return;
+  const h = bjHands[bjCurrentHand];
+  if (!h || h.done || h.cards.length < 2) return;
+
+  // Determine dealer upcard column index
+  const dealerCols = ['2','3','4','5','6','7','8','9','10','A'];
+  const dealerUp = bjDealerCards[0];
+  const dealerRank = ['J','Q','K'].includes(dealerUp.rank) ? '10' : dealerUp.rank;
+  const colIdx = dealerCols.indexOf(dealerRank);
+  if (colIdx < 0) return;
+
+  // Determine which table and row to highlight
+  let tableId, rowIdx;
+  const cards = h.cards;
+  const total = bjHandTotal(cards);
+  const isPair = cards.length === 2 && bjCardValue(cards[0]) === bjCardValue(cards[1]);
+  const isSoft = bjIsSoft(cards);
+
+  if (isPair) {
+    const pairLabels = ['A,A','10,10','9,9','8,8','7,7','6,6','5,5','4,4','3,3','2,2'];
+    const pairVal = bjCardValue(cards[0]);
+    const pairKey = pairVal === 11 ? 'A,A' : pairVal + ',' + pairVal;
+    rowIdx = pairLabels.indexOf(pairKey);
+    if (rowIdx >= 0) tableId = 'pairs';
+  }
+
+  if (tableId === undefined && isSoft && total >= 13 && total <= 20) {
+    const softLabels = ['A,2','A,3','A,4','A,5','A,6','A,7','A,8','A,9'];
+    const nonAceTotal = total - 11; // the non-ace part
+    const softKey = 'A,' + nonAceTotal;
+    rowIdx = softLabels.indexOf(softKey);
+    if (rowIdx >= 0) tableId = 'soft-totals';
+  }
+
+  if (tableId === undefined && total >= 5 && total <= 17) {
+    const hardLabels = ['5','6','7','8','9','10','11','12','13','14','15','16','17'];
+    rowIdx = hardLabels.indexOf(String(total));
+    if (rowIdx >= 0) tableId = 'hard-totals';
+  }
+
+  if (tableId === undefined || rowIdx === undefined || rowIdx < 0) return;
+
+  const table = document.querySelector(`table[data-strat="${tableId}"]`);
+  if (!table) return;
+
+  // Highlight column headers
+  table.querySelector(`th[data-col="${colIdx}"]`).classList.add('strat-col-hl');
+
+  // Highlight row cells
+  table.querySelectorAll(`td[data-row="${rowIdx}"]`).forEach(td => td.classList.add('strat-row-hl'));
+
+  // Highlight column cells
+  table.querySelectorAll(`td[data-col="${colIdx}"]`).forEach(td => td.classList.add('strat-col-hl'));
+
+  // Highlight the specific cell
+  const cell = table.querySelector(`td[data-row="${rowIdx}"][data-col="${colIdx}"]`);
+  if (cell) cell.classList.add('strat-cell-hl');
+
+}
+
 function bjHighlightCurrentHand() {
   document.querySelectorAll('.bj-hand-box').forEach(b => b.classList.remove('active-hand'));
   if (bjCurrentHand >= 0 && bjCurrentHand < bjHands.length) {
@@ -2362,16 +2695,25 @@ function bjShowActions() {
   $('bjBtnStand').style.display = '';
   // Double: only on first 2 cards and have enough balance
   $('bjBtnDouble').style.display = (h.cards.length === 2 && balance >= h.bet) ? '' : 'none';
+  // Split: only on first 2 cards with same value, have enough balance, and max 4 hands
+  const canSplit = h.cards.length === 2 && bjCardValue(h.cards[0]) === bjCardValue(h.cards[1]) && balance >= h.bet && bjHands.length < 4;
+  $('bjBtnSplit').style.display = canSplit ? '' : 'none';
+  bjHighlightStrategy();
 }
 
 function bjHideActions() {
   $('bjBtnHit').style.display = 'none';
   $('bjBtnStand').style.display = 'none';
   $('bjBtnDouble').style.display = 'none';
+  $('bjBtnSplit').style.display = 'none';
+  document.querySelectorAll('.strat-row-hl, .strat-col-hl, .strat-cell-hl').forEach(el => {
+    el.classList.remove('strat-row-hl', 'strat-col-hl', 'strat-cell-hl');
+  });
 }
 
 async function bjHit() {
   if (bjPhase !== 'playing') return;
+  bjCheckAction('H');
   const h = bjHands[bjCurrentHand];
   const c = bjDrawCard();
   h.cards.push(c);
@@ -2388,21 +2730,25 @@ async function bjHit() {
     $('bjResult' + bjCurrentHand).className = 'bj-hand-result lose';
     bjAdvanceHand();
   } else if (total === 21) {
-    bjStand();
+    bjHands[bjCurrentHand].done = true;
+    bjAdvanceHand();
   } else {
     // Hide double after first hit
     $('bjBtnDouble').style.display = 'none';
+    bjHighlightStrategy();
   }
 }
 
 async function bjStand() {
   if (bjPhase !== 'playing') return;
+  bjCheckAction('S');
   bjHands[bjCurrentHand].done = true;
   bjAdvanceHand();
 }
 
 async function bjDouble() {
   if (bjPhase !== 'playing') return;
+  bjCheckAction('D');
   const h = bjHands[bjCurrentHand];
   if (balance < h.bet) return;
   balance -= h.bet;
@@ -2432,6 +2778,70 @@ async function bjDouble() {
     $('bjResult' + bjCurrentHand).className = 'bj-hand-result lose';
   }
   bjAdvanceHand();
+}
+
+async function bjSplit() {
+  if (bjPhase !== 'playing') return;
+  const h = bjHands[bjCurrentHand];
+  if (h.cards.length !== 2 || bjCardValue(h.cards[0]) !== bjCardValue(h.cards[1])) return;
+  if (balance < h.bet || bjHands.length >= 4) return;
+
+  bjCheckAction('P');
+
+  // Deduct bet for the new hand
+  balance -= h.bet;
+  updateBalance();
+
+  // Split: take second card from current hand, create new hand
+  const splitCard = h.cards.pop();
+  const newHand = { cards: [splitCard], bet: h.bet, done: false, doubled: false, result: '', slot: h.slot };
+
+  // Insert new hand right after current
+  bjHands.splice(bjCurrentHand + 1, 0, newHand);
+
+  // Deal one card to each split hand
+  const c1 = bjDrawCard();
+  h.cards.push(c1);
+  const c2 = bjDrawCard();
+  newHand.cards.push(c2);
+
+  // Check for aces split — each gets only one card
+  const isAceSplit = splitCard.rank === 'A';
+
+  // Re-render all hand boxes
+  const row = $('bjHandsRow');
+  row.innerHTML = '';
+  for (let i = 0; i < bjHands.length; i++) {
+    const box = document.createElement('div');
+    box.className = 'bj-hand-box';
+    box.id = 'bjBox' + i;
+    box.innerHTML = `
+      <div class="bj-hand-label">Hand ${bjHands[i].slot + 1}${bjHands.length > 1 ? String.fromCharCode(65 + (i - bjHands.findIndex(hh => hh.slot === bjHands[i].slot))) : ''}</div>
+      <div class="bj-hand-cards" id="bjCards${i}"></div>
+      <div class="chip-stack" id="bjPlayChips${i}"></div>
+      <div class="bj-hand-bet" id="bjPlayBet${i}">$${bjHands[i].bet.toLocaleString()}</div>
+      <div class="bj-hand-result" id="bjResult${i}"></div>
+    `;
+    row.appendChild(box);
+    bjRenderChipStack($('bjPlayChips' + i), bjHands[i].bet);
+    for (const card of bjHands[i].cards) {
+      $('bjCards' + i).appendChild(bjCreateCard(card, false));
+    }
+  }
+
+  await sleep(300);
+
+  // If aces split, both hands are done (one card each only)
+  if (isAceSplit) {
+    h.done = true;
+    newHand.done = true;
+    bjAdvanceHand();
+    return;
+  }
+
+  // Continue playing current hand
+  bjHighlightCurrentHand();
+  bjShowActions();
 }
 
 async function bjAdvanceHand() {
@@ -2543,17 +2953,18 @@ function bjResolveAll() {
   const net = totalWin - totalBet;
   if (net > 0) {
     bjSetMessage(`You win $${net.toLocaleString()}!`, 'win');
-    // Save original (pre-double) bets by slot for rebet
-    const rebets = [0, 0, 0];
-    bjHands.forEach(h => { rebets[h.slot] = h.doubled ? h.bet / 2 : h.bet; });
-    bjLastWinBets = rebets;
   } else if (net === 0) {
     bjSetMessage('Push — bets returned', '');
-    bjLastWinBets = null;
   } else {
     bjSetMessage(`You lose $${Math.abs(net).toLocaleString()}`, 'lose');
-    bjLastWinBets = null;
   }
+
+  // Save per-hand results for rebet (use original pre-double bet)
+  bjLastHandResults = bjHands.map(h => ({
+    slot: h.slot,
+    bet: h.doubled ? h.bet / 2 : h.bet,
+    result: h.result
+  }));
 
   $('bjBtnNewRound').style.display = '';
 }
@@ -2563,17 +2974,24 @@ function bjNewRound() {
   bjHands = [];
   bjDealerCards = [];
   bjCurrentHand = 0;
+  bjClearFeedback();
 
-  // Re-place last winning bets if affordable
-  if (bjLastWinBets) {
-    const rebetTotal = bjLastWinBets.reduce((a, b) => a + b, 0);
+  // Keep bets on hands that won/pushed, clear losing hands
+  if (bjLastHandResults) {
+    const newBets = [0, 0, 0];
+    bjLastHandResults.forEach(({ slot, bet, result }) => {
+      if (result === 'win' || result === 'blackjack' || result === 'push') {
+        newBets[slot] = bet;
+      }
+    });
+    const rebetTotal = newBets.reduce((a, b) => a + b, 0);
     if (balance >= rebetTotal) {
-      bjBets = [...bjLastWinBets];
+      bjBets = newBets;
       balance -= rebetTotal;
     } else {
       bjBets = [0, 0, 0];
-      bjLastWinBets = null;
     }
+    bjLastHandResults = null;
   } else {
     bjBets = [0, 0, 0];
   }
@@ -2624,14 +3042,15 @@ function toggleStrategy() {
 
 function buildStratTable(title, rowLabels, data) {
   const dealerCols = ['2','3','4','5','6','7','8','9','10','A'];
+  const tableId = title.toLowerCase().replace(/\s+/g, '-');
   let html = `<div class="strat-section-title">${title}</div>`;
-  html += '<table class="strat-table"><thead><tr><th></th>';
-  dealerCols.forEach(c => html += `<th>${c}</th>`);
+  html += `<table class="strat-table" data-strat="${tableId}"><thead><tr><th></th>`;
+  dealerCols.forEach((c, ci) => html += `<th data-col="${ci}">${c}</th>`);
   html += '</tr></thead><tbody>';
   rowLabels.forEach((label, r) => {
-    html += `<tr><td class="row-label">${label}</td>`;
-    data[r].forEach(cell => {
-      html += `<td class="${cell}">${cell}</td>`;
+    html += `<tr data-row="${r}"><td class="row-label">${label}</td>`;
+    data[r].forEach((cell, ci) => {
+      html += `<td class="${cell}" data-row="${r}" data-col="${ci}">${cell}</td>`;
     });
     html += '</tr>';
   });
