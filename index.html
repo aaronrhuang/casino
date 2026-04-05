@@ -1981,6 +1981,7 @@ let bjDealerCards = [];
 let bjPhase = 'betting'; // betting, playing, dealerTurn, done
 let bjCurrentHand = 0;
 let bjBets = [0, 0, 0]; // per-hand bets during betting
+let bjLastWinBets = null; // [bet0, bet1, bet2] from last winning round
 let bjSelectedChip = 500;
 
 function bjDrawCard() {
@@ -2025,6 +2026,23 @@ function bjIsBlackjack(cards) {
   return cards.length === 2 && bjHandTotal(cards) === 21;
 }
 
+function bjRenderChipStack(container, amount) {
+  container.innerHTML = '';
+  if (amount <= 0) return;
+  const denoms = [100000, 50000, 25000, 10000, 1000, 500, 25];
+  let remaining = amount;
+  const chips = [];
+  for (const d of denoms) {
+    while (remaining >= d && chips.length < 8) { chips.push(d); remaining -= d; }
+  }
+  chips.forEach(v => {
+    const chip = document.createElement('div');
+    chip.className = `chip ${chipClass(v)}`;
+    chip.textContent = chipLabel(v);
+    container.appendChild(chip);
+  });
+}
+
 function bjRenderBettingHands() {
   const row = $('bjHandsRow');
   row.innerHTML = '';
@@ -2035,10 +2053,12 @@ function bjRenderBettingHands() {
     box.innerHTML = `
       <div class="bj-hand-label">Hand ${i + 1}</div>
       <div class="bj-hand-cards" style="min-height:82px;"></div>
+      <div class="chip-stack" id="bjChips${i}"></div>
       <div class="bj-hand-bet" id="bjHandBet${i}">${bjBets[i] > 0 ? '$' + bjBets[i].toLocaleString() : 'Place bet'}</div>
     `;
     box.addEventListener('click', () => bjPlaceBetOnHand(i));
     row.appendChild(box);
+    bjRenderChipStack($('bjChips' + i), bjBets[i]);
   }
 }
 
@@ -2049,10 +2069,11 @@ function bjPlaceBetOnHand(idx) {
   bjBets[idx] += value;
   balance -= value;
   updateBalance();
-  const el = document.getElementById('bjHandBet' + idx);
-  if (el) el.textContent = '$' + bjBets[idx].toLocaleString();
-  // Update no-bet styling
-  const box = el.closest('.bj-hand-box');
+  const betEl = document.getElementById('bjHandBet' + idx);
+  if (betEl) betEl.textContent = '$' + bjBets[idx].toLocaleString();
+  const chipsEl = document.getElementById('bjChips' + idx);
+  if (chipsEl) bjRenderChipStack(chipsEl, bjBets[idx]);
+  const box = betEl.closest('.bj-hand-box');
   if (box) box.classList.remove('no-bet');
   bjUpdateDealBtn();
 }
@@ -2256,10 +2277,12 @@ async function bjDeal() {
     box.innerHTML = `
       <div class="bj-hand-label">Hand ${bjHands[i].slot + 1}</div>
       <div class="bj-hand-cards" id="bjCards${i}"></div>
-      <div class="bj-hand-bet">$${bjHands[i].bet.toLocaleString()}</div>
+      <div class="chip-stack" id="bjPlayChips${i}"></div>
+      <div class="bj-hand-bet" id="bjPlayBet${i}">$${bjHands[i].bet.toLocaleString()}</div>
       <div class="bj-hand-result" id="bjResult${i}"></div>
     `;
     row.appendChild(box);
+    bjRenderChipStack($('bjPlayChips' + i), bjHands[i].bet);
   }
 
   $('bjDealerCards').innerHTML = '';
@@ -2387,10 +2410,11 @@ async function bjDouble() {
   h.doubled = true;
   updateBalance();
 
-  // Update displayed bet
-  const box = $('bjBox' + bjCurrentHand);
-  const betEl = box.querySelector('.bj-hand-bet');
+  // Update displayed bet and chips
+  const betEl = $('bjPlayBet' + bjCurrentHand);
   if (betEl) betEl.textContent = '$' + h.bet.toLocaleString();
+  const chipsEl = $('bjPlayChips' + bjCurrentHand);
+  if (chipsEl) bjRenderChipStack(chipsEl, h.bet);
 
   // Draw exactly one card
   const c = bjDrawCard();
@@ -2519,10 +2543,16 @@ function bjResolveAll() {
   const net = totalWin - totalBet;
   if (net > 0) {
     bjSetMessage(`You win $${net.toLocaleString()}!`, 'win');
+    // Save original (pre-double) bets by slot for rebet
+    const rebets = [0, 0, 0];
+    bjHands.forEach(h => { rebets[h.slot] = h.doubled ? h.bet / 2 : h.bet; });
+    bjLastWinBets = rebets;
   } else if (net === 0) {
     bjSetMessage('Push — bets returned', '');
+    bjLastWinBets = null;
   } else {
     bjSetMessage(`You lose $${Math.abs(net).toLocaleString()}`, 'lose');
+    bjLastWinBets = null;
   }
 
   $('bjBtnNewRound').style.display = '';
@@ -2530,10 +2560,23 @@ function bjResolveAll() {
 
 function bjNewRound() {
   bjPhase = 'betting';
-  bjBets = [0, 0, 0];
   bjHands = [];
   bjDealerCards = [];
   bjCurrentHand = 0;
+
+  // Re-place last winning bets if affordable
+  if (bjLastWinBets) {
+    const rebetTotal = bjLastWinBets.reduce((a, b) => a + b, 0);
+    if (balance >= rebetTotal) {
+      bjBets = [...bjLastWinBets];
+      balance -= rebetTotal;
+    } else {
+      bjBets = [0, 0, 0];
+      bjLastWinBets = null;
+    }
+  } else {
+    bjBets = [0, 0, 0];
+  }
 
   $('bjDealerCards').innerHTML = '';
   $('bjBtnDeal').style.display = '';
@@ -2546,6 +2589,7 @@ function bjNewRound() {
   bjSetMessage('', '');
   bjRenderBettingHands();
   bjUpdateChipTray();
+  bjUpdateDealBtn();
 
   if (balance < 100) {
     bjPhase = 'gameover';
