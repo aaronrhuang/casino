@@ -414,6 +414,7 @@
     position: relative;
     touch-action: none;
   }
+  .chip-stack { touch-action: none; }
   .chip-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.5); }
   .chip-btn.active {
     transform: translateY(-4px);
@@ -667,7 +668,6 @@
     display: flex;
     justify-content: center;
     gap: 24px;
-    flex-wrap: wrap;
     width: 100%;
   }
   .bj-hand-box {
@@ -1343,6 +1343,7 @@ function onBetChipPointerDown(e) {
   }
 
   chipDrag = { value: removeVal, source: 'zone', zone: zoneName, pointerId: e.pointerId, startX: e.clientX, startY: e.clientY };
+  zone.setPointerCapture(e.pointerId);
   createChipGhost(removeVal, e.clientX, e.clientY);
 }
 
@@ -2090,10 +2091,21 @@ function bjRenderChipStack(container, amount) {
   });
 }
 
+function bjGetMaxHands() {
+  const container = document.querySelector('.bj-table');
+  if (!container) return 3;
+  const w = container.clientWidth - 40; // padding
+  // Each hand box is ~140px min + 24px gap
+  if (w >= 140 * 3 + 24 * 2) return 3;
+  if (w >= 140 * 2 + 24) return 2;
+  return 1;
+}
+
 function bjRenderBettingHands() {
+  const maxHands = bjGetMaxHands();
   const row = $('bjHandsRow');
   row.innerHTML = '';
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < maxHands; i++) {
     const box = document.createElement('div');
     box.className = 'bj-hand-box' + (bjBets[i] > 0 ? '' : ' no-bet');
     box.dataset.hand = i;
@@ -2218,6 +2230,7 @@ $('bjHandsRow').addEventListener('pointerdown', function(e) {
   }
 
   bjChipDrag = { value: removeVal, source: 'box', handIdx: idx, startX: e.clientX, startY: e.clientY, pointerId: e.pointerId };
+  box.setPointerCapture(e.pointerId);
   bjCreateChipGhost(removeVal, e.clientX, e.clientY, false);
 }, { passive: false });
 
@@ -3029,6 +3042,22 @@ shoe = createShoe();
 updateBalance();
 renderHistory();
 bjRenderBettingHands();
+
+window.addEventListener('resize', function() {
+  if (bjPhase === 'betting' && currentGame === 'blackjack') {
+    const maxHands = bjGetMaxHands();
+    // Return bets on hands that no longer fit
+    for (let i = maxHands; i < 3; i++) {
+      if (bjBets[i] > 0) {
+        balance += bjBets[i];
+        bjBets[i] = 0;
+      }
+    }
+    updateBalance();
+    bjRenderBettingHands();
+    bjUpdateDealBtn();
+  }
+});
 
 // ══════════════════════════════════════
 // ── Basic Strategy Chart ──
