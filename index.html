@@ -993,10 +993,11 @@
   <button class="btn primary" id="bjBtnNewRound" onclick="bjNewRound()" style="display:none;">New Round</button>
 </div>
 
+<div class="strat-feedback" id="stratFeedback"></div>
+
 <button class="strategy-toggle" id="stratToggle" onclick="toggleStrategy()">
   Basic Strategy <span class="arrow">&#9660;</span>
 </button>
-<div class="strat-feedback" id="stratFeedback"></div>
 <div class="strategy-panel" id="stratPanel">
   <div class="strategy-panel-inner" id="stratContent"></div>
 </div>
@@ -2696,7 +2697,7 @@ function bjShowActions() {
   // Double: only on first 2 cards and have enough balance
   $('bjBtnDouble').style.display = (h.cards.length === 2 && balance >= h.bet) ? '' : 'none';
   // Split: only on first 2 cards with same value, have enough balance, and max 4 hands
-  const canSplit = h.cards.length === 2 && bjCardValue(h.cards[0]) === bjCardValue(h.cards[1]) && balance >= h.bet && bjHands.length < 4;
+  const canSplit = h.cards.length === 2 && bjCardValue(h.cards[0]) === bjCardValue(h.cards[1]) && balance >= h.bet && bjHands.length < 8;
   $('bjBtnSplit').style.display = canSplit ? '' : 'none';
   bjHighlightStrategy();
 }
@@ -2784,7 +2785,7 @@ async function bjSplit() {
   if (bjPhase !== 'playing') return;
   const h = bjHands[bjCurrentHand];
   if (h.cards.length !== 2 || bjCardValue(h.cards[0]) !== bjCardValue(h.cards[1])) return;
-  if (balance < h.bet || bjHands.length >= 4) return;
+  if (balance < h.bet || bjHands.length >= 8) return;
 
   bjCheckAction('P');
 
